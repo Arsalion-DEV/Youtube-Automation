@@ -1,0 +1,30 @@
+          <TabsList className="bg-gradient-to-r from-slate-800/50 to-slate-900/50 border border-slate-700/50 backdrop-blur-sm rounded-xl grid w-full grid-cols-4 p-1 gap-0">
+            <TabsTrigger 
+              value="generate" 
+              className="text-slate-300 data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/20 data-[state=active]:to-purple-500/20 data-[state=active]:border-blue-400/30 hover:text-white/90 border-0 rounded-lg transition-all duration-300 backdrop-blur-sm"
+            >
+              <Wand2 className="h-4 w-4 mr-2" />
+              Generate
+            </TabsTrigger>
+            <TabsTrigger 
+              value="projects" 
+              className="text-slate-300 data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/20 data-[state=active]:to-purple-500/20 data-[state=active]:border-blue-400/30 hover:text-white/90 border-0 rounded-lg transition-all duration-300 backdrop-blur-sm"
+            >
+              <Video className="h-4 w-4 mr-2" />
+              Projects
+            </TabsTrigger>
+            <TabsTrigger 
+              value="analytics" 
+              className="text-slate-300 data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/20 data-[state=active]:to-purple-500/20 data-[state=active]:border-blue-400/30 hover:text-white/90 border-0 rounded-lg transition-all duration-300 backdrop-blur-sm"
+            >
+              <BarChart3 className="h-4 w-4 mr-2" />
+              Analytics
+            </TabsTrigger>
+            <TabsTrigger 
+              value="settings" 
+              className="text-slate-300 data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/20 data-[state=active]:to-purple-500/20 data-[state=active]:border-blue-400/30 hover:text-white/90 border-0 rounded-lg transition-all duration-300 backdrop-blur-sm"
+            >
+              <Settings className="h-4 w-4 mr-2" />
+              Settings
+            </TabsTrigger>
+          </TabsList>

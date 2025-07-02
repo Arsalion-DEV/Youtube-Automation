@@ -1,0 +1,32 @@
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { AuthProvider } from "@/components/AuthContext";
+import SidebarLayout from "@/components/SidebarLayout";
+
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata = {
+  title: "YouTube Automation Platform",
+  description: "Professional YouTube automation and analytics platform with multi-channel management",
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <ThemeProvider defaultTheme="system" storageKey="youtube-automation-theme">
+          <AuthProvider>
+            <SidebarLayout>
+              {children}
+            </SidebarLayout>
+          </AuthProvider>
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}

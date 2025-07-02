@@ -1,0 +1,48 @@
+{
+  "optimization_settings": {
+    "database": {
+      "connection_pool_size": 10,
+      "query_timeout": 5,
+      "batch_size": 100
+    },
+    "redis": {
+      "connection_pool_size": 20,
+      "timeout": 3,
+      "retry_attempts": 3
+    },
+    "api": {
+      "request_timeout": 10,
+      "max_concurrent_requests": 50,
+      "response_compression": true
+    },
+    "veo3": {
+      "max_concurrent_generations": 5,
+      "queue_timeout": 300,
+      "retry_failed_tasks": true
+    }
+  },
+  "performance_thresholds": {
+    "cpu_warning": 50,
+    "cpu_critical": 80,
+    "memory_warning": 70,
+    "memory_critical": 90,
+    "response_time_warning": 1000,
+    "response_time_critical": 5000
+  },
+  "monitoring": {
+    "health_check_interval": 30,
+    "log_level": "INFO",
+    "metrics_retention_days": 7
+  },
+  "production_optimizations": {
+    "enable_compression": true,
+    "cache_static_assets": true,
+    "database_connection_pooling": true,
+    "async_task_processing": true,
+    "resource_limits": {
+      "max_video_generations_per_hour": 100,
+      "max_database_connections": 20,
+      "max_redis_connections": 30
+    }
+  }
+}

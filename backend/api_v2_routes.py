@@ -1,0 +1,135 @@
+from fastapi import APIRouter, HTTPException, Depends
+# URL transformation functions
+def transform_video_url(url):
+    """Transform CDN URLs to local server URLs"""
+    if url and "cdn.youtube-automation.com" in url:
+        filename = url.split("/")[-1]
+        return f"http://13.60.77.139:8001/assets/clips/{filename}"
+    return url
+
+def transform_video_data(video_data):
+    """Transform video data to use local URLs"""
+    if isinstance(video_data, dict) and "result_url" in video_data:
+        video_data["result_url"] = transform_video_url(video_data["result_url"])
+    return video_data
+
+from typing import List, Dict, Any, Optional
+import sqlite3
+import json
+from datetime import datetime, timedelta
+
+router = APIRouter(prefix="/api/v2", tags=["v2-api"])
+
+DATABASE_PATH = "youtube_automation.db"
+
+def get_db_connection():
+    """Get database connection"""
+    conn = sqlite3.connect(DATABASE_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+@router.get("/videos")
+async def get_videos(limit: int = 50, offset: int = 0):
+    """Get video list with analytics"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            SELECT * FROM videos 
+            ORDER BY created_at DESC 
+            LIMIT ? OFFSET ?
+        """, (limit, offset))
+        
+        videos = []
+        for row in cursor.fetchall():
+            video = dict(row)
+            videos.append(video)
+        
+        conn.close()
+        
+        return {
+            "videos": videos,
+            "total": len(videos),
+            "limit": limit,
+            "offset": offset
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/analytics")
+async def get_analytics(timeframe: str = "7d"):
+    """Get analytics data"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Calculate date range
+        if timeframe == "24h":
+            since_date = datetime.now() - timedelta(hours=24)
+        elif timeframe == "7d":
+            since_date = datetime.now() - timedelta(days=7)
+        elif timeframe == "30d":
+            since_date = datetime.now() - timedelta(days=30)
+        else:
+            since_date = datetime.now() - timedelta(days=7)
+        
+        # Get video count
+        cursor.execute("SELECT COUNT(*) as count FROM videos WHERE created_at >= ?", (since_date.isoformat(),))
+        video_count = cursor.fetchone()["count"]
+        
+        # Get success rate (assuming status field exists)
+        cursor.execute("""
+            SELECT 
+                COUNT(*) as total,
+                SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed
+            FROM videos 
+            WHERE created_at >= ?
+        """, (since_date.isoformat(),))
+        
+        result = cursor.fetchone()
+        total_videos = result["total"]
+        completed_videos = result["completed"]
+        success_rate = (completed_videos / total_videos * 100) if total_videos > 0 else 0
+        
+        conn.close()
+        
+        return {
+            "timeframe": timeframe,
+            "video_count": video_count,
+            "success_rate": round(success_rate, 2),
+            "total_processed": total_videos,
+            "completed": completed_videos,
+            "generated_at": datetime.now().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/system/status")
+async def get_system_status():
+    """Get system status and health metrics"""
+    try:
+        import psutil
+        
+        # Get CPU and memory usage
+        cpu_percent = psutil.cpu_percent(interval=1)
+        memory = psutil.virtual_memory()
+        disk = psutil.disk_usage('/')
+        
+        return {
+            "status": "healthy",
+            "cpu_usage": cpu_percent,
+            "memory_usage": {
+                "percent": memory.percent,
+                "used": memory.used,
+                "total": memory.total
+            },
+            "disk_usage": {
+                "percent": disk.percent,
+                "used": disk.used,
+                "total": disk.total
+            },
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

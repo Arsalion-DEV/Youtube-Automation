@@ -1,0 +1,36 @@
+# Core FastAPI and web framework
+fastapi
+uvicorn[standard]
+python-multipart
+python-jose[cryptography]
+passlib[bcrypt]
+
+# Database
+aiosqlite
+sqlalchemy
+
+# Background tasks
+celery
+redis
+flower
+
+# HTTP client
+httpx
+requests
+
+# Google VEO3 / Vertex AI integration
+google-genai
+google-cloud-aiplatform
+vertexai
+google-cloud-storage
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
+
+# Utilities
+python-dotenv
+pydantic
+typing-extensions
+click
+aiofiles

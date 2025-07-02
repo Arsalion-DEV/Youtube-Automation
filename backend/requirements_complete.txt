@@ -1,0 +1,66 @@
+# Core FastAPI and web framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# Database
+aiosqlite==0.19.0
+sqlalchemy==2.0.23
+
+# Background tasks
+celery==5.3.4
+redis==5.0.1
+flower==2.0.1
+
+# HTTP client
+httpx==0.25.2
+requests==2.31.0
+
+# Google VEO3 / Vertex AI integration
+google-genai>=0.8.0
+google-cloud-aiplatform>=1.69.0
+vertexai>=1.69.0
+google-cloud-storage>=2.18.0
+google-auth==2.23.4
+google-auth-oauthlib==1.1.0
+google-auth-httplib2==0.1.1
+google-api-python-client==2.108.0
+
+# AI and ML libraries
+numpy==1.24.3
+opencv-python==4.8.1.78
+Pillow==10.1.0
+scipy==1.11.4
+
+# Video processing
+moviepy==1.0.3
+imageio==2.31.5
+imageio-ffmpeg==0.4.9
+
+# Audio processing
+pydub==0.25.1
+librosa==0.10.1
+soundfile==0.12.1
+
+# TTS (optional, comment out if not needed)
+# TTS==0.22.0
+# bark==1.2.1
+# piper-tts==1.2.0
+
+# Utilities
+python-dotenv==1.0.0
+pydantic==2.5.0
+typing-extensions==4.8.0
+dataclasses-json==0.6.3
+click==8.1.7
+
+# Logging and monitoring
+loguru==0.7.2
+
+# Task scheduling
+apscheduler==3.10.4
+
+# File handling
+aiofiles==23.2.0

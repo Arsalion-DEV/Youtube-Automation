@@ -1,0 +1,237 @@
+'use client'
+
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { AuthProvider } from "@/components/AuthContext";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { 
+  Home, Video, Users, Globe, Calendar, BarChart3, 
+  Plus, PlayCircle, Wand2, Clock, Bell, Search
+} from "lucide-react";
+
+const inter = Inter({ subsets: ["latin"] });
+
+// Navigation items with their routes
+const navigationItems = [
+  { name: "Dashboard", href: "/", icon: Home, emoji: "🏠" },
+  { name: "Channels", href: "/channels", icon: Users, emoji: "📺", badge: "✨" },
+  { name: "Videos", href: "/videos", icon: Video, emoji: "🎬" },
+  { name: "Multi-Platform", href: "/multi-platform", icon: Globe, emoji: "🌐", badge: "New" },
+  { name: "Scheduler", href: "/scheduler", icon: Calendar, emoji: "📅" },
+  { name: "Analytics", href: "/analytics", icon: BarChart3, emoji: "📊" },
+];
+
+// Quick action items
+const quickActions = [
+  { name: "Add Channel", href: "/channels/add", emoji: "➕" },
+  { name: "Create Video", href: "/videos/create", emoji: "🎥" },
+  { name: "AI Wizard", href: "/wizard", emoji: "🪄" },
+  { name: "Publish", href: "/publisher", emoji: "🚀" },
+];
+
+// Page titles based on pathname
+const getPageTitle = (pathname: string) => {
+  switch (pathname) {
+    case "/": return "Dashboard";
+    case "/channels": return "Channels";
+    case "/videos": return "Videos";
+    case "/multi-platform": return "Multi-Platform";
+    case "/scheduler": return "Scheduler";
+    case "/analytics": return "Analytics";
+    case "/wizard": return "AI Channel Wizard";
+    case "/publisher": return "Multi-Platform Publisher";
+    default: return "Dashboard";
+  }
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <title>YouTube Automation Platform</title>
+        <meta name="description" content="Professional YouTube automation and analytics platform with multi-channel management" />
+      </head>
+      <body className={inter.className}>
+        <ThemeProvider defaultTheme="system" storageKey="youtube-automation-theme">
+          <AuthProvider>
+            <div className="min-h-screen bg-gray-50 flex">
+              {/* Fixed Sidebar */}
+              <div className="fixed inset-y-0 left-0 z-50 w-72 bg-white shadow-lg border-r border-gray-200">
+                {/* Sidebar Header */}
+                <div className="flex h-16 items-center justify-between px-6 border-b border-gray-200">
+                  <Link href="/" className="flex items-center group">
+                    <motion.div 
+                      className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <span className="text-white font-bold text-lg">Y</span>
+                    </motion.div>
+                    <div className="ml-3">
+                      <h1 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                        YouTube Pro
+                      </h1>
+                      <p className="text-xs text-gray-500">Automation Platform</p>
+                    </div>
+                  </Link>
+                </div>
+
+                {/* Navigation */}
+                <nav className="flex-1 px-4 py-6 space-y-2">
+                  {navigationItems.map((item) => {
+                    const isActive = pathname === item.href;
+                    return (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                          isActive
+                            ? "bg-blue-100 text-blue-700 shadow-sm"
+                            : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 hover:shadow-sm"
+                        }`}
+                      >
+                        <motion.span 
+                          className="mr-3 text-lg"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                        >
+                          {item.emoji}
+                        </motion.span>
+                        {item.name}
+                        {item.badge && (
+                          <span className={`ml-auto px-2 py-1 text-xs rounded ${
+                            item.badge === "New" 
+                              ? "bg-green-100 text-green-800" 
+                              : "text-purple-600"
+                          }`}>
+                            {item.badge}
+                          </span>
+                        )}
+                      </Link>
+                    );
+                  })}
+                </nav>
+
+                {/* Quick Actions */}
+                <div className="border-t border-gray-200 p-4">
+                  <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">
+                    Quick Actions
+                  </p>
+                  <div className="space-y-2">
+                    {quickActions.map((action) => (
+                      <Link
+                        key={action.name}
+                        href={action.href}
+                        className="w-full flex items-center px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-gray-900 rounded-md transition-colors group"
+                      >
+                        <motion.span 
+                          className="mr-2"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                        >
+                          {action.emoji}
+                        </motion.span>
+                        {action.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Main content area */}
+              <div className="ml-72 flex-1">
+                {/* Top Navigation Bar */}
+                <div className="bg-white shadow-sm border-b border-gray-200">
+                  <div className="flex h-16 items-center justify-between px-6">
+                    <div className="flex items-center space-x-4">
+                      <h2 className="text-xl font-semibold text-gray-900">
+                        {getPageTitle(pathname)}
+                      </h2>
+                    </div>
+                    
+                    <div className="flex items-center space-x-4">
+                      {/* System Status */}
+                      <div className="hidden md:flex items-center space-x-4 text-sm">
+                        <div className="flex items-center space-x-1">
+                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                          <span className="text-gray-600">API</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                          <span className="text-gray-600">DB</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <span className="text-gray-600">Memory: 150MB</span>
+                        </div>
+                      </div>
+
+                      {/* Search */}
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                        <input
+                          type="text"
+                          placeholder="Search..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        />
+                      </div>
+
+                      {/* User menu */}
+                      <div className="flex items-center space-x-3">
+                        <motion.button 
+                          className="relative p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <Bell className="h-5 w-5" />
+                          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                        </motion.button>
+                        <div className="flex items-center space-x-2">
+                          <Link href="/auth" className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                            Sign In
+                          </Link>
+                          <Link href="/auth">
+                            <motion.button 
+                              className="px-4 py-2 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                            >
+                              Get Started
+                            </motion.button>
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Page content */}
+                <main className="p-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {children}
+                  </motion.div>
+                </main>
+              </div>
+            </div>
+          </AuthProvider>
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}
