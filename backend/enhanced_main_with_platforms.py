@@ -103,6 +103,16 @@ class ChannelComparisonRequest(BaseModel):
     channel_ids: List[str] = Field(..., description="Channel IDs to compare")
     metric: str = Field("subscribers", description="Primary comparison metric")
 
+class TitleOptimizationRequest(BaseModel):
+    title: str = Field(..., description="Video title to optimize")
+    keywords: str = Field("", description="Comma-separated keywords")
+    target_audience: str = Field("", description="Target audience description")
+
+class ThumbnailComparisonRequest(BaseModel):
+    thumbnail1_url: str = Field(..., description="First thumbnail URL")
+    thumbnail2_url: str = Field(..., description="Second thumbnail URL")
+    test_duration: int = Field(7, description="Test duration in days")
+
 # ============================================================================
 # HEALTH CHECK ENDPOINTS
 # ============================================================================
@@ -209,13 +219,14 @@ async def get_keyword_suggestions(title: str, description: str = ""):
         raise HTTPException(status_code=500, detail=f"Keyword suggestions failed: {str(e)}")
 
 @app.post("/vidiq/optimize-title")
-async def optimize_title(original_title: str, keywords: List[str], target_length: int = 50):
+async def optimize_title(request: TitleOptimizationRequest):
     """Generate optimized title variations"""
     try:
         if not seo_optimizer:
             raise HTTPException(status_code=503, detail="SEO optimizer not available")
         
-        variations = await seo_optimizer.generate_optimized_title(original_title, keywords, target_length)
+        keywords_list = request.keywords.split(',') if request.keywords else []
+        variations = await seo_optimizer.generate_optimized_title(request.title, keywords_list, 50)
         return {"status": "success", "data": {"variations": variations}}
     
     except Exception as e:
@@ -338,13 +349,17 @@ async def analyze_thumbnail(request: ThumbnailAnalysisRequest):
         raise HTTPException(status_code=500, detail=f"Thumbnail analysis failed: {str(e)}")
 
 @app.post("/tubebuddy/thumbnail/compare")
-async def compare_thumbnails(thumbnail_urls: List[str], category: str = "general"):
-    """Compare multiple thumbnails and rank them"""
+async def compare_thumbnails(request: ThumbnailComparisonRequest):
+    """Compare two thumbnails and rank them"""
     try:
         if not thumbnail_analyzer:
             raise HTTPException(status_code=503, detail="Thumbnail analyzer not available")
         
-        comparison = await thumbnail_analyzer.compare_thumbnails(thumbnail_urls, category)
+        comparison = await thumbnail_analyzer.compare_thumbnails(
+            request.thumbnail1_url, 
+            request.thumbnail2_url, 
+            request.test_duration
+        )
         return {"status": "success", "data": comparison}
     
     except Exception as e:
