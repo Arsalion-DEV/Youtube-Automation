@@ -353,6 +353,15 @@ class CommentManager:
             
             total = len(comments)
             
+            if total == 0:
+                return {
+                    'positive': 0,
+                    'negative': 0,
+                    'neutral': 0,
+                    'total_analyzed': 0,
+                    'dominant_sentiment': 'neutral'
+                }
+            
             return {
                 'positive': round(sentiment_counts['positive'] / total * 100, 1),
                 'negative': round(sentiment_counts['negative'] / total * 100, 1),
@@ -450,7 +459,7 @@ class CommentManager:
                     'high': round(toxicity_levels['high'] / total * 100, 1) if total > 0 else 0
                 },
                 'high_toxicity_comments': len([c for c in comments if c.toxicity_score and c.toxicity_score > 0.7]),
-                'average_toxicity_score': round(sum(c.toxicity_score for c in comments if c.toxicity_score) / len([c for c in comments if c.toxicity_score]), 3) if comments else 0
+                'average_toxicity_score': round(sum(c.toxicity_score for c in comments if c.toxicity_score) / len([c for c in comments if c.toxicity_score]), 3) if comments and len([c for c in comments if c.toxicity_score]) > 0 else 0
             }
             
         except Exception as e:
