@@ -34,3 +34,4 @@ pydantic
 typing-extensions
 click
 aiofiles
+psutil

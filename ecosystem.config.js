@@ -3,10 +3,10 @@ module.exports = {
     {
       name: "youtube-automation-backend",
       script: "./venv/bin/python",
-      args: "enhanced_main_with_enterprise.py --host 0.0.0.0 --port 8001",
-      cwd: "/home/ubuntu/Veo-3-Automation/backend",
+      args: "production_optimized_main.py --host 0.0.0.0 --port 8001",
+      cwd: "/home/ubuntu/Youtube-Automation/backend",
       env: {
-        PYTHONPATH: "/home/ubuntu/Veo-3-Automation/backend"
+        PYTHONPATH: "/home/ubuntu/Youtube-Automation/backend"
       },
       instances: 1,
       exec_mode: "fork",
@@ -20,7 +20,7 @@ module.exports = {
       name: "youtube-automation-frontend",
       script: "npm",
       args: "run dev",
-      cwd: "/home/ubuntu/Veo-3-Automation/frontend",
+      cwd: "/home/ubuntu/Youtube-Automation/frontend",
       instances: 1,
       exec_mode: "fork",
       watch: false,
